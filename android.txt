@@ -1,0 +1,3 @@
+title=Kivame
+author=Sachin Railhan
+orientation=portrait
