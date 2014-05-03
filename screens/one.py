@@ -25,8 +25,8 @@ class ScreenOne(Screen):
         super(ScreenOne, self).__init__(*args, **kwargs)
         self.app = app
         self.init_game()
-        self.keyboard = Window.request_keyboard(self.keyboard_closed, self, 'text')
-        self.keyboard.bind(on_key_down=self.on_keyboard_down)
+        #self.keyboard = Window.request_keyboard(self.keyboard_closed, self, 'text')
+        #self.keyboard.bind(on_key_down=self.on_keyboard_down)
         self.music = SoundLoader.load('static/screen1_music.wav')
         self.music.loop = True
 
@@ -102,3 +102,4 @@ class ScreenOne(Screen):
     def on_leave(self):
         self.music.stop()
         self.music.unload()
+        #self.keyboard_closed()
