@@ -27,8 +27,6 @@ class CircleObject(Widget):
     radius = NumericProperty()
     cy_body = ObjectProperty()
     cy_circle = ObjectProperty()
-    initial_color = ListProperty()
-    touch_color = ListProperty()
     def __init__(self, pos, radius, space, *args, **kwargs):
         super(CircleObject, self).__init__(*args, **kwargs)
         self.cy_body = cy.Body(100, 1e9)
@@ -41,8 +39,6 @@ class CircleObject(Widget):
         self.size = radius*2, radius*2
         self.pos = pos[0] - radius, pos[1] - radius
         self.radius = radius
-        self.initial_color = [1, 0, 128/255.]
-        self.touch_color = [0, 1, 127/255.]
 
     def increase_radius(self):
         self.radius += 5
@@ -94,7 +90,6 @@ class ScreenTwo(Screen):
     def on_touch_up(self, *args):
         try:
             widg = self.widget_to_increase
-            widg.canvas.children[0].rgb = widg.initial_color
         except Exception, e:
             print e
         self.widget_to_increase = 0
@@ -104,7 +99,6 @@ class ScreenTwo(Screen):
         for item in self.all_widgets:
             score += (item.radius * item.radius)
             if item == self.widget_to_increase:
-                item.canvas.children[0].rgb = item.touch_color
                 item.increase_radius()
                 position = item.cy_body.position
                 velocity = item.cy_body.velocity

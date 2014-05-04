@@ -24,9 +24,28 @@ import cymunk as cy
 
 
 #Custom import
-from popups import WinPopup
+from popups import WinPopup, LosePopup
 
 FRAMES = 30.0
+
+
+class DangerObject(Widget):
+    cy_body = ObjectProperty()
+    cy_poly = ObjectProperty()
+
+    def __init__(self, pos, size, space, *args, **kwargs):
+        super(DangerObject, self).__init__(*args, **kwargs)
+        self.cy_body = cy.Body(None, None)
+        self.cy_body.position = pos[0], pos[1]
+        self.cy_poly = cy.Poly.create_box(self.cy_body, size=size, offset=(0,0), radius=0)
+        self.cy_poly.elasticity = 0.2
+        space.add_static(self.cy_poly)
+        self.cy_poly.collision_type = 4
+        self.size_hint = None, None
+        self.size = size
+        self.pos = pos[0] - size[0]/2, pos[1] - size[1]/2
+
+
 
 class CircleObject(Widget):
     radius = NumericProperty()
@@ -47,7 +66,6 @@ class CircleObject(Widget):
         self.size = radius*2, radius*2
         self.pos = pos[0] - radius, pos[1] - radius
         self.radius = radius
-
 
     def update(self):
         p = self.cy_body.position
@@ -87,7 +105,7 @@ class WinObject(Widget):
 
 
 
-class ScreenThree(Screen):
+class ScreenFour(Screen):
     space = ObjectProperty()
     ball = ObjectProperty()
     walls = ListProperty()
@@ -96,14 +114,17 @@ class ScreenThree(Screen):
     right = BooleanProperty(0)
     down = BooleanProperty(0)
     win_objects = ListProperty()
+    danger_objects = ListProperty()
     win_popup = ObjectProperty()
+    lose_popup = ObjectProperty()
 
 
 
     def __init__(self, app, *args, **kwargs):
-        super(ScreenThree, self).__init__(*args, **kwargs)
+        super(ScreenFour, self).__init__(*args, **kwargs)
         self.app = app
-        self.win_popup = WinPopup(app, "You won the game", "score", "four")
+        self.win_popup = WinPopup(app, "You won the game", "score", "five")
+        self.lose_popup = LosePopup(app, "Sorry you lost the game", "Try again", "four")
         self.box_size = [Window.size[0] / 16., Window.size[1] / 10.]
         self.init_physics()
         self.keyboard = Window.request_keyboard(self.keyboard_closed, self, 'text')
@@ -127,11 +148,10 @@ class ScreenThree(Screen):
         self.add_widget(forward_button)
 
     def back_btn_pressed(self, *args):
-        self.app.switch_screen("two")
+        self.app.switch_screen("three")
 
     def forward_btn_pressed(self, *args):
-        self.app.switch_screen("four")
-
+        self.app.switch_screen("five")
 
     def on_keyboard_down(self, keyboard, keycode, text, modifiers):
         direction = keycode[1]
@@ -171,16 +191,29 @@ class ScreenThree(Screen):
             self.walls.append([0,i])
             self.walls.append([15,i])
         self.win_objects.append([14, 8])
+        for i in xrange(2, 16, 2):
+            for j in xrange(1, 8):
+                if i%4:
+                    self.danger_objects.append((i, j))
+                else:
+                    self.danger_objects.append((i, j+1))
         self.add_ball()
         self.add_walls()
         self.add_win_objects()
-        self.space.add_collision_handler(1, 3, begin = self.collision_between_balls)
+        self.add_danger_objects()
+        self.space.add_collision_handler(1, 3, begin = self.collision_with_end)
+        self.space.add_collision_handler(1, 4, begin = self.collision_with_danger)
 
-    def collision_between_balls(self, space, arbiter, *args, **kwargs):
+
+    def collision_with_end(self, space, arbiter, *args, **kwargs):
         self.win_popup.open()
         self.on_leave()
         return True
 
+    def collision_with_danger(self, space, arbiter, *args, **kwargs):
+        self.lose_popup.open()
+        self.on_leave()
+        return True
 
     def add_ball(self):
         radius = min(self.box_size[0], self.box_size[1]) * 0.3
@@ -202,6 +235,12 @@ class ScreenThree(Screen):
             win = WinObject(pos, size, self.space)
             self.add_widget(win)
 
+    def add_danger_objects(self):
+        for x, y in self.danger_objects:
+            pos = (x * self.box_size[0]) + (self.box_size[0]/2.), (y * self.box_size[1]) + (self.box_size[1]/2.)
+            size = self.box_size[0], self.box_size[1]
+            danger = DangerObject(pos, size, self.space)
+            self.add_widget(danger)
 
     def step(self, *args):
         self.space.step(1/FRAMES)

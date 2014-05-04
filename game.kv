@@ -42,6 +42,13 @@
     Label:
         text: root.label_text 
 
+<LosePopup>:
+    size_hint: .5, .5
+    title: root.title 
+    Label:
+        text: root.label_text 
+
+
 <ScreenOne>:
     Image:
         source: "static/screen1_back.png"
@@ -53,7 +60,6 @@
         id: label
         color: 242/255., 19/255., 190/255., 1
         font_size: self.height
-
     GridLayout:
         size_hint: 1, 0.1
         pos: 0, self.parent.size[1] * 0.9
@@ -201,7 +207,7 @@
 <CircleObject>:
     canvas.after:
         Color:
-            rgb: 12/255., 242/255., 47/255.
+            rgba: 12/255., 242/255., 47/255., 1
         Ellipse:
             size: self.size
             pos: self.pos
@@ -213,6 +219,17 @@
         Rectangle:
             size: self.size
             pos: self.pos
+
+ 
+<DangerObject>:
+    canvas:
+        Color:
+            rgb: 1, 0, 0
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+
 
 <WinObject>:
     canvas:
@@ -230,8 +247,20 @@
         Rectangle:
             size: self.size
             pos: self.pos
-    Button:
-        text: "<"
-        size_hint: 0.05, 0.05
-        pos: self.parent.size[0] * 0.025, self.parent.size[1] * 0.925
-        
+       
+
+<ScreenFour>:
+    canvas:
+        Color:
+            rgb: 1, 1, 1
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+<ScreenTemp>:
+    canvas:
+        Color:
+            rgb: 1, 1, 1
+        Rectangle:
+            size: self.size
+            pos: self.pos

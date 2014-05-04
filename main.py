@@ -12,7 +12,7 @@ os.environ["KIVY_AUDIO"] = "pygame"
 #Kivy Imports
 from kivy.config import Config
 
-#Config.set("graphics", "fullscreen", "auto")
+Config.set("graphics", "fullscreen", "auto")
 from kivy.app import App
 from kivy.properties import ObjectProperty, BooleanProperty, StringProperty, NumericProperty
 from kivy.uix.screenmanager import ScreenManager, Screen, FallOutTransition
@@ -23,9 +23,11 @@ from kivy.clock import Clock
 
 #Custom Imports
 from screens.menu import MenuScreen
+from screens.temp import ScreenTemp
 from screens.one import ScreenOne
 from screens.two import ScreenTwo
 from screens.three import ScreenThree
+from screens.four import ScreenFour
 
 
 class LogoScreen(Screen):
@@ -70,6 +72,10 @@ class GameApp(App):
             self.screen = ScreenTwo(name="two", app=self)
         elif screen_name == "three":
             self.screen = ScreenThree(name="three", app=self)
+        elif screen_name == "four":
+            self.screen = ScreenFour(name="four", app=self)
+        elif screen_name == "temp":
+            self.screen = ScreenTemp(name="temp", app=self)
         self.sm.clear_widgets()
         self.sm.add_widget(self.screen)
         self.sm.current = self.screen.name
