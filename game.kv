@@ -211,6 +211,14 @@
         Ellipse:
             size: self.size
             pos: self.pos
+     
+<DragCircleObject>:
+    canvas.after:
+        Color:
+            rgba: 0, 0, 1, 1 
+        Ellipse:
+            size: self.size
+            pos: self.pos
  
 <WallObject>:
     canvas:
@@ -256,6 +264,15 @@
         Rectangle:
             size: self.size
             pos: self.pos
+
+<ScreenFive>:
+    canvas:
+        Color:
+            rgb: 1, 1, 1
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
 
 <ScreenTemp>:
     canvas:

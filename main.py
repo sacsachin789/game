@@ -12,7 +12,7 @@ os.environ["KIVY_AUDIO"] = "pygame"
 #Kivy Imports
 from kivy.config import Config
 
-Config.set("graphics", "fullscreen", "auto")
+#Config.set("graphics", "fullscreen", "auto")
 from kivy.app import App
 from kivy.properties import ObjectProperty, BooleanProperty, StringProperty, NumericProperty
 from kivy.uix.screenmanager import ScreenManager, Screen, FallOutTransition
@@ -28,6 +28,8 @@ from screens.one import ScreenOne
 from screens.two import ScreenTwo
 from screens.three import ScreenThree
 from screens.four import ScreenFour
+from screens.five import ScreenFive
+from screens.six import ScreenSix
 
 
 class LogoScreen(Screen):
@@ -76,18 +78,14 @@ class GameApp(App):
             self.screen = ScreenFour(name="four", app=self)
         elif screen_name == "temp":
             self.screen = ScreenTemp(name="temp", app=self)
+        elif screen_name == "five":
+            self.screen = ScreenFive(name="five", app=self)
+        elif screen_name = "six":
+            self.screen = ScreenSix(name="six", app=self)
         self.sm.clear_widgets()
         self.sm.add_widget(self.screen)
         self.sm.current = self.screen.name
-
-    def save_uid(self):
-        with open("data/uid.json", "w+") as f:
-            data = {}
-            data["uid"] = self.user_uid
-            data["uname"] = self.user_name
-            json.dump(data, f)
-
-        
+   
 
 if __name__ == "__main__":
     DEVID = "MAIN"
