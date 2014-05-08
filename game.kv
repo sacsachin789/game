@@ -219,6 +219,22 @@
         Ellipse:
             size: self.size
             pos: self.pos
+      
+<DangerCircleObject>:
+    canvas.after:
+        Color:
+            rgba: 242/255., 86/255., 39/255., 1 
+        Ellipse:
+            size: self.size
+            pos: self.pos
+
+<DoorObject>:
+    canvas:
+        Color:
+            rgb: 79/255., 68/255., 55/255.
+        Rectangle:
+            size: self.size
+            pos: self.pos
  
 <WallObject>:
     canvas:
@@ -227,7 +243,6 @@
         Rectangle:
             size: self.size
             pos: self.pos
-
  
 <DangerObject>:
     canvas:
@@ -237,8 +252,6 @@
             size: self.size
             pos: self.pos
 
-
-
 <WinObject>:
     canvas:
         Color:
@@ -247,25 +260,16 @@
             size: self.size
             pos: self.pos
 
-
-<ScreenThree>:
+<FakeDoorObject,RealDoorObject>:
     canvas:
         Color:
-            rgb: 1, 1, 1
-        Rectangle:
-            size: self.size
-            pos: self.pos
-       
-
-<ScreenFour>:
-    canvas:
-        Color:
-            rgb: 1, 1, 1
+            rgb: 176/255., 130/255., 5/255.
         Rectangle:
             size: self.size
             pos: self.pos
 
-<ScreenFive>:
+
+<ScreenThree,ScreenFour,ScreenFive,ScreenSix,ScreenSeven,ScreenEight>:
     canvas:
         Color:
             rgb: 1, 1, 1

@@ -1,12 +1,10 @@
 """
 """
-
 #STL
 import os, inspect, sys, math
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
-
 
 #kivy
 from kivy.properties import NumericProperty, ObjectProperty, ListProperty, BooleanProperty
@@ -18,16 +16,13 @@ from kivy.graphics.vertex_instructions import Line
 from kivy.graphics import Color
 from kivy.uix.button import Button
 
-
 #3rd party
 import cymunk as cy
-
 
 #Custom import
 from popups import WinPopup, LosePopup
 
 FRAMES = 30.0
-
 
 class DangerObject(Widget):
     cy_body = ObjectProperty()
@@ -70,6 +65,7 @@ class DangerCircleObject(Widget):
         p = self.cy_body.position
         self.pos = p.x - self.radius, p.y - self.radius
 
+
 class DragCircleObject(Widget):
     radius = NumericProperty()
     cy_body = ObjectProperty()
@@ -94,6 +90,7 @@ class DragCircleObject(Widget):
         p = self.cy_body.position
         self.pos = p.x - self.radius, p.y - self.radius
 
+
 class CircleObject(Widget):
     radius = NumericProperty()
     cy_body = ObjectProperty()
@@ -103,11 +100,9 @@ class CircleObject(Widget):
         super(CircleObject, self).__init__(*args, **kwargs)
         self.cy_body = cy.Body(1, 100)
         self.cy_body.position = pos[0], pos[1]
-        #self.cy_body.velocity_limit = 10
         self.cy_circle = cy.Circle(self.cy_body, radius)
         self.cy_circle.elasticity = 1
         self.cy_circle.collision_type = 1
-        #self.cy_circle.friction = 1
         space.add(self.cy_body, self.cy_circle)
         self.size_hint = None, None
         self.size = radius*2, radius*2
@@ -117,6 +112,38 @@ class CircleObject(Widget):
     def update(self):
         p = self.cy_body.position
         self.pos = p.x - self.radius, p.y - self.radius
+
+class FakeDoorObject(Widget):
+    cy_body = ObjectProperty()
+    cy_poly = ObjectProperty()
+
+    def __init__(self, pos, size, space, *args, **kwargs):
+        super(FakeDoorObject, self).__init__(*args, **kwargs)
+        self.cy_body = cy.Body(None, None)
+        self.cy_body.position = pos[0], pos[1]
+        self.cy_poly = cy.Poly.create_box(self.cy_body, size=size, offset=(0,0), radius=0)
+        self.cy_poly.elasticity = 0.2
+        space.add_static(self.cy_poly)
+        self.cy_poly.collision_type = 7
+        self.size_hint = None, None
+        self.size = size
+        self.pos = pos[0] - size[0]/2, pos[1] - size[1]/2
+
+class RealDoorObject(Widget):
+    cy_body = ObjectProperty()
+    cy_poly = ObjectProperty()
+
+    def __init__(self, pos, size, space, *args, **kwargs):
+        super(RealDoorObject, self).__init__(*args, **kwargs)
+        self.cy_body = cy.Body(None, None)
+        self.cy_body.position = pos[0], pos[1]
+        self.cy_poly = cy.Poly.create_box(self.cy_body, size=size, offset=(0,0), radius=0)
+        self.cy_poly.elasticity = 0.2
+        space.add_static(self.cy_poly)
+        self.cy_poly.collision_type = 8
+        self.size_hint = None, None
+        self.size = size
+        self.pos = pos[0] - size[0]/2, pos[1] - size[1]/2
 
 class WallObject(Widget):
     cy_body = ObjectProperty()
@@ -150,34 +177,35 @@ class WinObject(Widget):
         self.size = size
         self.pos = pos[0] - size[0]/2, pos[1] - size[1]/2
 
-
-
-class ScreenSix(Screen):
+class ScreenEight(Screen):
     space = ObjectProperty()
-    ball = ObjectProperty()
+    balls = ListProperty()
+    real_balls = ListProperty()
     walls = ListProperty()
     up = BooleanProperty(0)
     left = BooleanProperty(0)
     right = BooleanProperty(0)
     down = BooleanProperty(0)
+    fake = BooleanProperty(0)
     win_objects = ListProperty()
     danger_objects = ListProperty()
     drag_circle_objects = ListProperty()
     danger_circle_objects = ListProperty()
     real_drag_circle_objects = ListProperty()
     real_danger_circle_objects = ListProperty()
+    real_door_objects = ListProperty()
+    fake_door_objects = ListProperty()
+    door_objects = ListProperty()
     win_popup = ObjectProperty()
     lose_popup = ObjectProperty()
     counter = NumericProperty(0)
 
     def __init__(self, app, *args, **kwargs):
-        super(ScreenSix, self).__init__(*args, **kwargs)
+        super(ScreenEight, self).__init__(*args, **kwargs)
         self.app = app
-        self.win_popup = WinPopup(app, "You won the game", "score", "seven")
-        self.win_popup.bind(on_dismiss=self.on_pre_leave)
-        self.lose_popup = LosePopup(app, "Sorry you lost the game", "Try again", "six")
+        self.win_popup = WinPopup(app, "You won the game", "score", "nine")
+        self.lose_popup = LosePopup(app, "Sorry you lost the game", "Try again", "eight")
         self.box_size = [Window.size[0] / 16., Window.size[1] / 10.]
-        self.lose_popup.bind(on_dismiss=self.on_pre_leave)
         self.init_physics()
         self.keyboard = Window.request_keyboard(self.keyboard_closed, self, 'text')
         self.keyboard.bind(on_key_down=self.on_keyboard_down)
@@ -200,10 +228,10 @@ class ScreenSix(Screen):
         self.add_widget(forward_button)
 
     def back_btn_pressed(self, *args):
-        self.app.switch_screen("five")
+        self.app.switch_screen("seven")
 
     def forward_btn_pressed(self, *args):
-        self.app.switch_screen("seven")
+        self.app.switch_screen("nine")
 
     def on_keyboard_down(self, keyboard, keycode, text, modifiers):
         direction = keycode[1]
@@ -242,49 +270,48 @@ class ScreenSix(Screen):
         for i in xrange(1,9):
             self.walls.append([0,i])
             self.walls.append([15,i])
-        self.walls.append((12, 2))
-        self.walls.append((12, 3))
-        self.walls.append((12, 4))
-        self.walls.append((12, 5))
-        self.walls.append((12, 6))
-        self.walls.append((12, 7))
-        self.walls.append((12, 8))
         self.win_objects.append([14, 8])
-        self.danger_circle_objects = [(14, 1), (14, 2), (14, 3), (14, 4), (14, 5), (10, 6), (10, 7), (13, 1), (13, 2), (13, 3), (13, 4), (13, 5), (11, 6), (11, 7), (11, 8), (8, 6), (8, 7), (8, 8), (5, 6), (4, 6), (5, 8)]
         """
-        for i in xrange(2, 16, 2):
-            for j in xrange(1, 8):
-                if i%4:
-                    self.danger_objects.append((i, j))
-                else:
-                    self.danger_objects.append((i, j+1))
+        for i in xrange(1, 11):
+            self.fake_door_objects.append((i, 7))
+        self.real_door_objects.append((11, 7))
+        for i in xrange(12, 15):
+            self.fake_door_objects.append((i, 7))
         """
-        self.add_ball()
+        #self.danger_circle_objects = [(14, 1)]
+        self.walls.append((3, 3))
+        self.walls.append((14, 6))
+        self.walls.append((5, 3))
+        self.balls = [(1, 1), (14, 1), (8, 1)]
+        self.danger_objects = [(1, 8), (2, 6), (1, 4), (2, 2), (2, 8), (3, 8), (4, 8), (5, 8), (6, 8), (7, 8), (8, 8), (9, 8), (10, 8), (11, 8), (12, 8), (5, 1), (5, 2), (5, 4), (5, 5), (5, 6), (7, 2), (8, 2), (6, 4), (7, 4), (7, 6), (8, 6), (9, 2), (10, 2), (11, 2), (13, 2), (14, 2), (9, 4), (10, 4), (11, 4), (12, 4), (14, 4), (3, 6), (10, 6), (12, 6), (3, 1), (3, 2), (3, 4), (3, 5), (4, 1), (4, 2), (4, 3), (4, 4), (4, 5), (9, 3), (10, 3), (9, 1), (10, 1), (11, 1), (4, 6), (9, 6)]
+        self.add_balls()
         self.add_walls()
         self.add_win_objects()
         self.add_danger_objects()
         self.add_drag_circle_objects()
         self.add_danger_circle_objects()
+        self.add_fake_door_objects()
+        self.add_real_door_objects()
         self.space.add_collision_handler(1, 3, begin = self.collision_with_end)
-        self.space.add_collision_handler(1, 6, begin = self.collision_with_danger)
+        self.space.add_collision_handler(1, 4, begin = self.collision_with_danger)
 
     def collision_with_end(self, space, arbiter, *args, **kwargs):
-        Clock.unschedule(self.step)
-        self.on_pre_leave()
         self.win_popup.open()
+        self.on_pre_leave()
         return True
 
     def collision_with_danger(self, space, arbiter, *args, **kwargs):
-        Clock.unschedule(self.step)
         self.lose_popup.open()
         self.on_pre_leave()
         return True
 
-    def add_ball(self):
+    def add_balls(self):
         radius = min(self.box_size[0], self.box_size[1]) * 0.3
-        pos = self.box_size[0] + (radius * 1.1), self.box_size[1] + (radius * 1.1)
-        self.ball = CircleObject(pos, radius, self.space)
-        self.add_widget(self.ball)
+        for x,y in self.balls:
+            pos = (x * self.box_size[0]) + (radius * 1.1), (y * self.box_size[1]) + (radius * 1.1)
+            ball = CircleObject(pos, radius, self.space)
+            self.add_widget(ball)
+            self.real_balls.append(ball)
 
     def add_danger_circle_objects(self):
         for x, y in self.danger_circle_objects:
@@ -309,6 +336,20 @@ class ScreenSix(Screen):
             wall = WallObject(pos, size, self.space)
             self.add_widget(wall)
 
+    def add_fake_door_objects(self):
+        for x,y in self.fake_door_objects:
+            pos = (x * self.box_size[0]) + (self.box_size[0]/2.), (y * self.box_size[1]) + (self.box_size[1]/2.)
+            size = self.box_size[0], self.box_size[1]
+            door = FakeDoorObject(pos, size, self.space)
+            self.add_widget(door)
+
+    def add_real_door_objects(self):
+        for x,y in self.real_door_objects:
+            pos = (x * self.box_size[0]) + (self.box_size[0]/2.), (y * self.box_size[1]) + (self.box_size[1]/2.)
+            size = self.box_size[0], self.box_size[1]
+            door = RealDoorObject(pos, size, self.space)
+            self.add_widget(door)
+
     def add_win_objects(self):
         for x, y in self.win_objects:
             pos = (x * self.box_size[0]) + (self.box_size[0]/2.), (y * self.box_size[1]) + (self.box_size[1]/2.)
@@ -327,23 +368,22 @@ class ScreenSix(Screen):
         self.space.step(1/FRAMES)
         imp = 50
         if self.left:
-            self.ball.cy_body.apply_impulse([-1 * imp, 0])
+            for item in self.real_balls:
+                item.cy_body.apply_impulse([-1 * imp, 0])
         if self.right:
-            self.ball.cy_body.apply_impulse([1 * imp, 0])
+            for item in self.real_balls:
+                item.cy_body.apply_impulse([1 * imp, 0])
         if self.up:
-            self.ball.cy_body.apply_impulse([0, 1 * imp])
+            for item in self.real_balls:
+                item.cy_body.apply_impulse([0, 1 * imp])
         if self.down:
-            self.ball.cy_body.apply_impulse([0, -1 * imp])
-        for item in self.real_danger_circle_objects:
-            pos_y = self.ball.pos[1] - item.pos[1]
-            pos_x = self.ball.pos[0] - item.pos[0]
-            tan_inv = math.atan2(pos_y, pos_x)
-            temp_imp = imp * math.cos(tan_inv) * 0.9, imp * math.sin(tan_inv) * 0.9
-            item.cy_body.apply_impulse(temp_imp)
+            for item in self.real_balls:
+                item.cy_body.apply_impulse([0, -1 * imp])
         self.update_objects()
     
     def update_objects(self):
-        self.ball.update()
+        for item in self.real_balls: 
+            item.update()
         for item in self.real_drag_circle_objects:
             item.update()
         for item in self.real_danger_circle_objects:

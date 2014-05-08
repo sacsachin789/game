@@ -124,7 +124,9 @@ class ScreenFour(Screen):
         super(ScreenFour, self).__init__(*args, **kwargs)
         self.app = app
         self.win_popup = WinPopup(app, "You won the game", "score", "five")
+        self.win_popup.bind(on_dismiss=self.on_pre_leave)
         self.lose_popup = LosePopup(app, "Sorry you lost the game", "Try again", "four")
+        self.lose_popup.bind(on_dismiss=self.on_pre_leave)
         self.box_size = [Window.size[0] / 16., Window.size[1] / 10.]
         self.init_physics()
         self.keyboard = Window.request_keyboard(self.keyboard_closed, self, 'text')
@@ -207,12 +209,12 @@ class ScreenFour(Screen):
 
     def collision_with_end(self, space, arbiter, *args, **kwargs):
         self.win_popup.open()
-        self.on_leave()
+        self.on_pre_leave()
         return True
 
     def collision_with_danger(self, space, arbiter, *args, **kwargs):
         self.lose_popup.open()
-        self.on_leave()
+        self.on_pre_leave()
         return True
 
     def add_ball(self):
@@ -258,6 +260,6 @@ class ScreenFour(Screen):
     def update_objects(self):
         self.ball.update()
 
-    def on_leave(self):
+    def on_pre_leave(self, *args):
         Clock.unschedule(self.step)
         self.keyboard_closed()

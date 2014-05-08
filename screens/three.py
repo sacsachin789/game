@@ -104,6 +104,7 @@ class ScreenThree(Screen):
         super(ScreenThree, self).__init__(*args, **kwargs)
         self.app = app
         self.win_popup = WinPopup(app, "You won the game", "score", "four")
+        self.win_popup.bind(on_dismiss=self.on_pre_leave)
         self.box_size = [Window.size[0] / 16., Window.size[1] / 10.]
         self.init_physics()
         self.keyboard = Window.request_keyboard(self.keyboard_closed, self, 'text')
@@ -178,7 +179,7 @@ class ScreenThree(Screen):
 
     def collision_between_balls(self, space, arbiter, *args, **kwargs):
         self.win_popup.open()
-        self.on_leave()
+        self.on_pre_leave()
         return True
 
 
@@ -219,6 +220,6 @@ class ScreenThree(Screen):
     def update_objects(self):
         self.ball.update()
 
-    def on_leave(self):
+    def on_pre_leave(self, *args):
         Clock.unschedule(self.step)
         self.keyboard_closed()

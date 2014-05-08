@@ -152,7 +152,9 @@ class ScreenFive(Screen):
         super(ScreenFive, self).__init__(*args, **kwargs)
         self.app = app
         self.win_popup = WinPopup(app, "You won the game", "score", "six")
+        self.win_popup.bind(on_dismiss=self.on_pre_leave)
         self.lose_popup = LosePopup(app, "Sorry you lost the game", "Try again", "five")
+        self.lose_popup.bind(on_dismiss=self.on_pre_leave)
         self.box_size = [Window.size[0] / 16., Window.size[1] / 10.]
         self.init_physics()
         self.keyboard = Window.request_keyboard(self.keyboard_closed, self, 'text')
@@ -241,12 +243,12 @@ class ScreenFive(Screen):
         self.counter += 1
         if self.counter >= 2:
             self.win_popup.open()
-            self.on_leave()
+            self.on_pre_leave()
         return False
 
     def collision_with_danger(self, space, arbiter, *args, **kwargs):
         self.lose_popup.open()
-        self.on_leave()
+        self.on_pre_leave()
         return True
 
     def add_ball(self):
@@ -302,6 +304,6 @@ class ScreenFive(Screen):
         for item in self.real_drag_circle_objects:
             item.update()
 
-    def on_leave(self):
+    def on_pre_leave(self, *args):
         Clock.unschedule(self.step)
         self.keyboard_closed()
