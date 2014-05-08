@@ -24,6 +24,25 @@ from popups import WinPopup, LosePopup
 
 FRAMES = 30.0
 
+class DarkObject(Widget):
+    cy_body = ObjectProperty()
+    cy_poly = ObjectProperty()
+
+    def __init__(self, pos, size, space, *args, **kwargs):
+        super(DarkObject, self).__init__(*args, **kwargs)
+        size = size[0]/30., size[1]/30.
+        self.cy_body = cy.Body(None, None)
+        self.cy_body.position = pos[0], pos[1]
+        self.cy_poly = cy.Poly.create_box(self.cy_body, size=size, offset=(0,0), radius=0)
+        self.cy_poly.elasticity = 0.2
+        space.add_static(self.cy_poly)
+        self.cy_poly.collision_type = 9
+        self.size_hint = None, None
+        self.size = size
+        self.pos = pos[0] - size[0]/2, pos[1] - size[1]/2
+
+
+
 class DangerObject(Widget):
     cy_body = ObjectProperty()
     cy_poly = ObjectProperty()
@@ -91,13 +110,13 @@ class DragCircleObject(Widget):
         self.pos = p.x - self.radius, p.y - self.radius
 
 
-class CircleObject(Widget):
+class GlowCircleObject(Widget):
     radius = NumericProperty()
     cy_body = ObjectProperty()
     cy_circle = ObjectProperty()
 
     def __init__(self, pos, radius, space, *args, **kwargs):
-        super(CircleObject, self).__init__(*args, **kwargs)
+        super(GlowCircleObject, self).__init__(*args, **kwargs)
         self.cy_body = cy.Body(1, 100)
         self.cy_body.position = pos[0], pos[1]
         self.cy_circle = cy.Circle(self.cy_body, radius)
@@ -177,7 +196,7 @@ class WinObject(Widget):
         self.size = size
         self.pos = pos[0] - size[0]/2, pos[1] - size[1]/2
 
-class ScreenEight(Screen):
+class ScreenNine(Screen):
     space = ObjectProperty()
     balls = ListProperty()
     real_balls = ListProperty()
@@ -195,19 +214,17 @@ class ScreenEight(Screen):
     real_danger_circle_objects = ListProperty()
     real_door_objects = ListProperty()
     fake_door_objects = ListProperty()
+    dark_objects = ListProperty()
     door_objects = ListProperty()
     win_popup = ObjectProperty()
     lose_popup = ObjectProperty()
     counter = NumericProperty(0)
 
     def __init__(self, app, *args, **kwargs):
-        super(ScreenEight, self).__init__(*args, **kwargs)
+        super(ScreenNine, self).__init__(*args, **kwargs)
         self.app = app
-        quiz = "X O X X X X X X X X X X X X\n"
-        for i in xrange(7):
-            quiz += "X X X X X X X X X X X X X X\n"
-        self.win_popup = WinPopup(app, "You won the game", quiz, "nine")
-        self.lose_popup = LosePopup(app, "Sorry you lost the game", "Try again", "eight")
+        self.win_popup = WinPopup(app, "You won the game", "score", "ten")
+        self.lose_popup = LosePopup(app, "Sorry you lost the game", "Try again", "nine")
         self.box_size = [Window.size[0] / 16., Window.size[1] / 10.]
         self.init_physics()
         self.keyboard = Window.request_keyboard(self.keyboard_closed, self, 'text')
@@ -231,10 +248,10 @@ class ScreenEight(Screen):
         self.add_widget(forward_button)
 
     def back_btn_pressed(self, *args):
-        self.app.switch_screen("seven")
+        self.app.switch_screen("eight")
 
     def forward_btn_pressed(self, *args):
-        self.app.switch_screen("nine")
+        self.app.switch_screen("ten")
 
     def on_keyboard_down(self, keyboard, keycode, text, modifiers):
         direction = keycode[1]
@@ -273,7 +290,6 @@ class ScreenEight(Screen):
         for i in xrange(1,9):
             self.walls.append([0,i])
             self.walls.append([15,i])
-        self.win_objects.append([14, 8])
         """
         for i in xrange(1, 11):
             self.fake_door_objects.append((i, 7))
@@ -282,11 +298,14 @@ class ScreenEight(Screen):
             self.fake_door_objects.append((i, 7))
         """
         #self.danger_circle_objects = [(14, 1)]
+        """
         self.walls.append((3, 3))
         self.walls.append((14, 6))
         self.walls.append((5, 3))
-        self.balls = [(1, 1), (14, 1), (8, 1)]
-        self.danger_objects = [(1, 8), (2, 6), (1, 4), (2, 2), (2, 8), (3, 8), (4, 8), (5, 8), (6, 8), (7, 8), (8, 8), (9, 8), (10, 8), (11, 8), (12, 8), (5, 1), (5, 2), (5, 4), (5, 5), (5, 6), (7, 2), (8, 2), (6, 4), (7, 4), (7, 6), (8, 6), (9, 2), (10, 2), (11, 2), (13, 2), (14, 2), (9, 4), (10, 4), (11, 4), (12, 4), (14, 4), (3, 6), (10, 6), (12, 6), (3, 1), (3, 2), (3, 4), (3, 5), (4, 1), (4, 2), (4, 3), (4, 4), (4, 5), (9, 3), (10, 3), (9, 1), (10, 1), (11, 1), (4, 6), (9, 6)]
+        """
+        self.balls = [(1, 1)]
+        self.dark_objects = [(2, 8)]
+        #self.danger_objects = [(1, 8), (2, 6), (1, 4), (2, 2), (2, 8), (3, 8), (4, 8), (5, 8), (6, 8), (7, 8), (8, 8), (9, 8), (10, 8), (11, 8), (12, 8), (5, 1), (5, 2), (5, 4), (5, 5), (5, 6), (7, 2), (8, 2), (6, 4), (7, 4), (7, 6), (8, 6), (9, 2), (10, 2), (11, 2), (13, 2), (14, 2), (9, 4), (10, 4), (11, 4), (12, 4), (14, 4), (3, 6), (10, 6), (12, 6), (3, 1), (3, 2), (3, 4), (3, 5), (4, 1), (4, 2), (4, 3), (4, 4), (4, 5), (9, 3), (10, 3), (9, 1), (10, 1), (11, 1), (4, 6), (9, 6)]
         self.add_balls()
         self.add_walls()
         self.add_win_objects()
@@ -295,7 +314,8 @@ class ScreenEight(Screen):
         self.add_danger_circle_objects()
         self.add_fake_door_objects()
         self.add_real_door_objects()
-        self.space.add_collision_handler(1, 3, begin = self.collision_with_end)
+        self.add_dark_objects()
+        self.space.add_collision_handler(1, 9, begin = self.collision_with_end)
         self.space.add_collision_handler(1, 4, begin = self.collision_with_danger)
 
     def collision_with_end(self, space, arbiter, *args, **kwargs):
@@ -312,7 +332,7 @@ class ScreenEight(Screen):
         radius = min(self.box_size[0], self.box_size[1]) * 0.3
         for x,y in self.balls:
             pos = (x * self.box_size[0]) + (radius * 1.1), (y * self.box_size[1]) + (radius * 1.1)
-            ball = CircleObject(pos, radius, self.space)
+            ball = GlowCircleObject(pos, radius, self.space)
             self.add_widget(ball)
             self.real_balls.append(ball)
 
@@ -359,6 +379,13 @@ class ScreenEight(Screen):
             size = self.box_size[0], self.box_size[1]
             win = WinObject(pos, size, self.space)
             self.add_widget(win)
+
+    def add_dark_objects(self):
+        for x, y in self.dark_objects:
+            pos = (x * self.box_size[0]) + (self.box_size[0]/2.), (y * self.box_size[1]) + (self.box_size[1]/2.)
+            size = self.box_size[0], self.box_size[1]
+            dark = DarkObject(pos, size, self.space)
+            self.add_widget(dark)
 
     def add_danger_objects(self):
         for x, y in self.danger_objects:

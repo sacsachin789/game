@@ -151,7 +151,7 @@ class ScreenFive(Screen):
     def __init__(self, app, *args, **kwargs):
         super(ScreenFive, self).__init__(*args, **kwargs)
         self.app = app
-        self.win_popup = WinPopup(app, "You won the game", "score", "six")
+        self.win_popup = WinPopup(app, "You won the game", "Run Forrest Run!", "six")
         self.win_popup.bind(on_dismiss=self.on_pre_leave)
         self.lose_popup = LosePopup(app, "Sorry you lost the game", "Try again", "five")
         self.lose_popup.bind(on_dismiss=self.on_pre_leave)

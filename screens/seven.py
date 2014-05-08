@@ -202,7 +202,7 @@ class ScreenSeven(Screen):
     def __init__(self, app, *args, **kwargs):
         super(ScreenSeven, self).__init__(*args, **kwargs)
         self.app = app
-        self.win_popup = WinPopup(app, "You won the game", "score", "eight")
+        self.win_popup = WinPopup(app, "You won the game", "Think twice before taking any step.", "eight")
         self.lose_popup = LosePopup(app, "Sorry you lost the game", "Try again", "seven")
         self.box_size = [Window.size[0] / 16., Window.size[1] / 10.]
         self.init_physics()

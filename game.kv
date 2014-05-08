@@ -203,6 +203,19 @@
         size_hint: .05, .05 
         on_press: app.switch_screen("three")
 
+     
+<GlowCircleObject>:
+    canvas.after:
+        Color:
+            rgba: 1, 1, 1, 0.25
+        Ellipse:
+            pos: self.pos[0] - self.size[0] * 1.5, self.pos[1] - self.size[1] * 1.5
+            size: self.size[0] * 4, self.size[1] * 4 
+        Color:
+            rgba: 1, 1, 1, 1
+        Ellipse:
+            size: self.size
+            pos: self.pos
     
 <CircleObject>:
     canvas.after:
@@ -243,7 +256,16 @@
         Rectangle:
             size: self.size
             pos: self.pos
- 
+  
+<DarkObject>:
+    canvas:
+        Color:
+            rgb: 0, 0, 0
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+
 <DangerObject>:
     canvas:
         Color:

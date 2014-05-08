@@ -32,6 +32,7 @@ from screens.five import ScreenFive
 from screens.six import ScreenSix
 from screens.seven import ScreenSeven
 from screens.eight import ScreenEight
+from screens.nine import ScreenNine
 
 
 class LogoScreen(Screen):
@@ -88,6 +89,8 @@ class GameApp(App):
             self.screen = ScreenSeven(name="seven", app=self)
         elif screen_name == "eight":
             self.screen = ScreenEight(name="eight", app=self)
+        elif screen_name == "nine":
+            self.screen = ScreenNine(name="nine", app=self)
         self.sm.clear_widgets()
         self.sm.add_widget(self.screen)
         self.sm.current = self.screen.name

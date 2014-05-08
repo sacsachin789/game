@@ -123,7 +123,7 @@ class ScreenFour(Screen):
     def __init__(self, app, *args, **kwargs):
         super(ScreenFour, self).__init__(*args, **kwargs)
         self.app = app
-        self.win_popup = WinPopup(app, "You won the game", "score", "five")
+        self.win_popup = WinPopup(app, "You won the game", "Mix blue and green", "five")
         self.win_popup.bind(on_dismiss=self.on_pre_leave)
         self.lose_popup = LosePopup(app, "Sorry you lost the game", "Try again", "four")
         self.lose_popup.bind(on_dismiss=self.on_pre_leave)

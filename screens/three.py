@@ -103,7 +103,7 @@ class ScreenThree(Screen):
     def __init__(self, app, *args, **kwargs):
         super(ScreenThree, self).__init__(*args, **kwargs)
         self.app = app
-        self.win_popup = WinPopup(app, "You won the game", "score", "four")
+        self.win_popup = WinPopup(app, "You won the game", "Green = Good\nRed = Bad", "four")
         self.win_popup.bind(on_dismiss=self.on_pre_leave)
         self.box_size = [Window.size[0] / 16., Window.size[1] / 10.]
         self.init_physics()
