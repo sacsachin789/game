@@ -1,105 +1,224 @@
-from string import lowercase
+#STL
+import random
 from functools import partial
-import os, inspect, sys
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0, parentdir)
+
+
+
+#kivy
 from kivy.uix.screenmanager import Screen
-from kivy.properties import ObjectProperty, ListProperty, StringProperty, NumericProperty, BooleanProperty
 from kivy.uix.image import Image
+from kivy.uix.label import Label
+from kivy.uix.button import Button
 from kivy.core.window import Window
-from kivy.core.audio import SoundLoader
+from kivy.animation import Animation
 from kivy.clock import Clock
+from kivy.properties import ListProperty, ObjectProperty, NumericProperty, BooleanProperty
+from kivy.core.audio import SoundLoader as SL
+
+
+#3rd
+
+
+#custom
+
+X = Window.size[0]
+Y = Window.size[1]
+CLOUD_WIDTH = X/5.
+CLOUD_HEIGHT = Y/5.
+NO_WIDTH = X/15.
+NO_HEIGHT = Y/15.
+
+
+class Background(Image):
+    def __init__(self):
+        super(Background, self).__init__()
+        self.size_hint = [None, None]
+        self.size = [X, Y]
+        self.source = "static/bg_{0}.png".format(random.choice([0, 1, 2, 3, 4, 5]))
+        self.pos = [0, 0]
+        self.allow_stretch = True
+        self.keep_ratio = False
+
+class No(Image):
+    screen = ObjectProperty()
+    cloud = ObjectProperty()
+    index = NumericProperty()
+    question = NumericProperty()
+    answer = BooleanProperty()
+
+    def __init__(self, index, answer, cloud, screen):
+        super(No, self).__init__()
+        self.cloud = cloud
+        self.index = index
+        self.size_hint = [None, None]
+        self.size = [NO_WIDTH, NO_HEIGHT]
+        self.source = "static/{0}.png".format(index)
+        self.pos = [cloud.pos[0] + CLOUD_WIDTH/3., cloud.pos[1]]
+        self.screen = screen
+        self.answer = answer
+        self.animate()
+
+    def animate(self):
+        anim = Animation(y = Y/10., t="out_bounce", d = 3)
+        anim.start(self)
+
+
+class Drop(Image):
+    index = NumericProperty()
+
+    def __init__(self, index):
+        super(Drop, self).__init__()
+        self.size_hint = [None, None]
+        self.index = index
+        self.size = [X/15., CLOUD_HEIGHT/15.]
+        self.source = "static/drop.png"
+        self.pos = [X*((index-1)*0.0125), Y*(random.uniform(1.1, 2.0))]
+        self.animate()
+
+    def repeat(self, *args):
+        self.pos = [X*((self.index-1)*0.04), Y*(random.uniform(1.1, 1.35))]
+        self.animate()
+
+    def animate(self):
+        anim = Animation(y = 0, d = random.uniform(2, 4))
+        anim.start(self)
+        anim.bind(on_complete = self.repeat)
+
+
+class Cloud(Image):
+    place = BooleanProperty(0)
+    index = NumericProperty()
+
+    def __init__(self, index):
+        super(Cloud, self).__init__()
+        self.size_hint = [None, None]
+        self.index = index
+        self.size = [CLOUD_WIDTH, CLOUD_HEIGHT]
+        self.source = "static/cloud_{0}.png".format(index)
+        self.pos = [X*((index-1)*0.3), Y*(0.9 - ((index-1)*0.05)) - self.size[1] ]
+        self.animate()
+
+    def animate(self, *args):
+        d = random.uniform(2, 5)
+        if self.place:
+            anim = Animation(x = X*((self.index-1)*0.3), d = d)
+            self.place = 0
+        else:
+            anim = Animation(x = (X*(self.index*0.3)) - self.size[0]/2., d = d)
+            self.place = 1
+        anim.start(self)
+        anim.bind(on_complete = self.animate)
 
 class ScreenOne(Screen):
     app = ObjectProperty()
-    question_content = ListProperty()
-    content_marker = NumericProperty()
-    label_content = StringProperty()
-    music = ObjectProperty()
-    score = NumericProperty(0)
-    state = BooleanProperty(0)
-    counter = NumericProperty(60)
-
+    clouds = ListProperty()
+    questions = ListProperty()
+    answers = ListProperty()
+    options = ListProperty()
+    label = ObjectProperty()
+    index = NumericProperty(0)
+    r = NumericProperty(120)
+    g = NumericProperty(133)
+    b = NumericProperty(118)
+    thunder = ObjectProperty()
+    rain_music = ObjectProperty()
+    
     def __init__(self, app, *args, **kwargs):
         super(ScreenOne, self).__init__(*args, **kwargs)
         self.app = app
-        self.init_game()
-        #self.keyboard = Window.request_keyboard(self.keyboard_closed, self, 'text')
-        #self.keyboard.bind(on_key_down=self.on_keyboard_down)
-        self.music = SoundLoader.load('static/screen1_music.wav')
-        self.music.loop = True
+        self.questions = ["44%6", "x*x = 4 so x is", "Largest Democracy in the World?", "When did World War 2 begin?", "Total no of kivy properties", "Planet with rings", "NYC", "Speed of light(km/s)"]
+        self.answers = [1, 3, 3, 2, 3, 2, 1, 2]
+        self.thunder = SL.load("static/lightning.wav")
+        self.rain_music = SL.load("static/rain.wav")
+        self.rain_music.loop = True
+        assert len(self.questions) == len(self.answers)
+        self.create_objects()
+        self.update()
+        Clock.schedule_interval(self.update, 4)
 
-    def on_enter(self):
-        self.music.play()
+    def create_objects(self, *args):
+        self.clear_widgets()
+        #self.add_widget(Background())
+        self.create_rain()
+        self.label = Label( pos = [0,  Y * 0.4],
+                font_name = "static/cartoon.ttf",
+                font_size = Y/15.,
+                text_size = [X, None],
+                halign = "center"
+                )
+        self.back_btn = Button(size_hint = [0.05, 0.05],
+                pos = [X*0.025, Y*0.925],
+                font_name = "static/cartoon.ttf",
+                font_size = Y/15.,
+                halign = "center",
+                text = "<"
+                )
+        self.forward_btn = Button(size_hint = [0.05, 0.05],
+                pos = [X*0.925, Y*0.925],
+                font_name = "static/cartoon.ttf",
+                font_size = Y/15.,
+                halign = "center",
+                text = ">"
+                )
+        self.add_widget(self.back_btn)
+        self.add_widget(self.forward_btn)
+        self.add_widget(self.label)
+        for i in xrange(3):
+            cloud = Cloud(i+1)
+            self.clouds.append(cloud)
+            self.add_widget(cloud)
 
-    def init_game(self):
-        self.question_content = ['press start and type as i say hello my name is kivame',
-         'i am a small kivy app',
-         'i am very unique bcoz i m',
-         'first multiplayer game created in kivy',
-         'yes firzt but i am in prolbem today',
-         'save my townz from the evil elze we alls zill die',
-         'help pleaze az thee dere huh',
-         'yes rhis is lazt menemy',
-         'hang on yessssssssssss thank you',
-         'remember i should win the kivy contest']
-        self.marker = 0
-        self.content_marker = 0
-        self.label_content = self.question_content[self.marker]
-        self.ids.label.text = self.label_content
-        self.lowercase_set = set(lowercase)
+    def create_rain(self):
+        for i in xrange(1, 81):
+            drop = Drop(i)
+            self.add_widget(drop)
 
-    def on_keyboard_down(self, keyboard, keycode, text, modifiers):
-        text = str(text)
-        if text in self.lowercase_set or text is ' ':
-            self.button_pressed(text)
+    def go_to(self, screen):
+        self.app.switch_screen(screen)
 
-    def start_game(self):
-        if self.state:
+    def update(self, *args):
+        if self.index >= 8:
+            return False
+        for i in self.options:
+            self.remove_widget(i)
+        self.options = []
+        self.label.text = self.questions[self.index]
+        self.label.texture_update()
+        print self.label.text
+        for i in xrange(3):
+            item = No(i+1, i+1 == self.answers[self.index], self.clouds[i], self) 
+            self.add_widget(item)
+            self.options.append(item)
+        self.index += 1
+
+    def thunderstorm(self, start, *args):
+        if start:
+            self.r = 0
+            self.g = 0
+            self.b = 0
+            Clock.schedule_once(partial(self.thunderstorm, 0), 0.2)
             return
-        self.state = 1
-        label = self.ids.time_label
-        label.text = str(self.counter)
-        Clock.schedule_once(self.change_counter, 1)
+        self.r = 120
+        self.g = 133
+        self.b = 118
+        return
 
-    def change_counter(self, *args):
-        self.counter -= 1
-        label = self.ids.time_label
-        label.text = str(self.counter)
-        if self.counter:
-            Clock.schedule_once(self.change_counter, 1)
-        else:
-            self.state = 0
-
-    def button_pressed(self, text):
-        if not self.state:
+    def on_touch_down(self, touch, *args):
+        if self.back_btn.collide_point(*touch.pos):
+            self.go_to("menu")
+            return 
+        if self.forward_btn.collide_point(*touch.pos):
+            self.go_to("two")
             return
-        label = self.ids.label
-        if self.marker == 10:
-            return
-        item = self.label_content[0]
-        if item == ' ':
-            item2 = self.label_content[1]
-        else:
-            item2 = None
-        text = str(text)
-        if text == item:
-            self.label_content = self.label_content[1:]
-        elif text == item2:
-            self.label_content = self.label_content[2:]
-        if len(self.label_content) == 0:
-            self.marker += 1
-            self.score += 10
-            if self.marker == 10:
-                return
-            self.label_content = self.question_content[self.marker]
-        label.text = self.label_content
+        for item in self.options:
+            if item.collide_point(*touch.pos):
+                if not item.answer:
+                    self.thunderstorm(1)
+                    self.thunder.play()
 
-    def keyboard_closed(self):
-        self.keyboard.unbind(on_key_down=self.on_keyboard_down)
+    def on_pre_leave(self, *args):
+        Clock.unschedule(self.update)
+        self.rain_music.unload()
 
-    def on_leave(self):
-        self.music.stop()
-        self.music.unload()
-        #self.keyboard_closed()
+    def on_enter(self, *args):
+        self.rain_music.play()

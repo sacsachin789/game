@@ -7,7 +7,7 @@ import cymunk as cy
 #Kivy
 from kivy.uix.screenmanager import Screen
 from kivy.uix.button import Button
-from kivy.properties import ListProperty, StringProperty, NumericProperty, ObjectProperty
+from kivy.properties import ListProperty, StringProperty, NumericProperty, ObjectProperty, BooleanProperty
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.popup import Popup
 from kivy.uix.widget import Widget
@@ -19,6 +19,8 @@ from kivy.core.image import Image
 from kivy.core.window import Window
 
 #Custom
+from popups import WinPopup, LosePopup
+
 FRAMES = 60.0
 MIN_IMPULSE = -30000
 MAX_IMPULSE =  30000
@@ -50,19 +52,35 @@ class ScreenTwo(Screen):
     widget_to_increase = ObjectProperty()
     app = ObjectProperty()
     score = NumericProperty(0)
+    r = NumericProperty(random.randrange(0, 255))
+    g = NumericProperty(random.randrange(0, 255))
+    b = NumericProperty(random.randrange(0, 255))
+    r_up = BooleanProperty(0)
+    g_up = BooleanProperty(0)
+    b_up = BooleanProperty(0)
+    win_popup = ObjectProperty()
+    lose_popup = ObjectProperty()
+
 
     def __init__(self, app, *args, **kwargs):
         super(ScreenTwo, self).__init__(*args, **kwargs)
         self.app = app
         self.init_physics() 
+        self.animate()
+        self.win_popup = WinPopup(app, "You won the game", "Take green to green", "three")
+        self.win_popup.bind(on_dismiss=self.on_pre_leave)
+        self.lose_popup = LosePopup(app, "Sorry you lost the game", "Try again", "two")
+        self.lose_popup.bind(on_dismiss=self.on_pre_leave)
+        Clock.schedule_interval(self.animate, 1/40.)
         Clock.schedule_interval(self.step, 1/FRAMES)
+
 
     def step(self, *args):
         self.space.step(1/FRAMES)
         self.update_objects()
         self.ids.label.text = "Score: " + str(int(self.score))
 
-    def on_leave(self, *args):
+    def on_pre_leave(self, *args):
         Clock.unschedule(self.step)
 
     def on_touch_down(self, touch, *args):
@@ -116,11 +134,10 @@ class ScreenTwo(Screen):
             radius = item.radius
             item.size = radius * 2, radius * 2
             item.pos = p.x - radius, p.y - radius
-        self.score = ((3.14 * score) / (Window.size[0] * Window.size[1])) * 100 * (1000/65.)
+        self.score = ((3.14 * score) / (Window.size[0] * Window.size[1])) * 100 * (1000/50.)
         self.score /= 10.
-        if self.score >= 100 :
-            self.on_leave()
-
+        if self.score >= 100:
+            self.win_popup.open()
 
     def init_physics(self, *args):
         self.space = cy.Space()
@@ -138,9 +155,9 @@ class ScreenTwo(Screen):
         widg = self.widget_to_increase
         if widg:
             if widg.cy_circle in arbiter.shapes:
-                pass
-                #self.on_leave()
-                #self.lose_popup.open()
+                self.on_pre_leave()
+                self.lose_popup.open()
+                return False
         return True
 
     def set_boundary(self):
@@ -166,3 +183,29 @@ class ScreenTwo(Screen):
         self.space.add(b)
         self.space.add(c)
         self.space.add(d)
+
+    def animate(self, *args):
+        if self.r >= 255:
+            self.r_up = 0
+        elif self.r <= 0:
+            self.r_up = 1
+        if self.g >= 255:
+            self.g_up = 0
+        elif self.g <= 0:
+            self.g_up = 1
+        if self.b >= 255:
+            self.b_up = 0
+        elif self.b <= 0:
+            self.b_up = 1
+        if self.r_up:
+            self.r += 1
+        else:
+            self.r -= 1
+        if self.g_up:
+            self.g += 1
+        else:
+            self.g -= 1
+        if self.b_up:
+            self.b += 1
+        else:
+            self.b -= 1

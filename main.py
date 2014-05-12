@@ -22,7 +22,7 @@ from kivy.clock import Clock
 
 
 #Custom Imports
-from screens.menu import MenuScreen
+from screens.menu import ScreenMenu
 from screens.temp import ScreenTemp
 from screens.one import ScreenOne
 from screens.two import ScreenTwo
@@ -47,7 +47,7 @@ class LogoScreen(Screen):
     def on_enter(self):
         anim = Animation(y = 0, t = "out_bounce")
         anim.start(self.img)
-        Clock.schedule_once(partial(self.app.switch_screen, "menu"), 1.5)
+        Clock.schedule_once(partial(self.app.switch_screen, "menu"), 0.5)
 
 
 
@@ -60,17 +60,23 @@ class GameApp(App):
     user_uid = StringProperty()
     score = NumericProperty(0)
     opponent_score = NumericProperty(0)
+    is_touch = BooleanProperty()
 
     def build(self):
         self.sm = ScreenManager(transition = FallOutTransition(duration = 0.3))
         self.switch_screen("logo")
+        try:
+            import android
+            self.is_touch = 1
+        except ImportError:
+            self.is_touch = 0
         return self.sm
 
     def switch_screen(self, screen_name, *args):
         if screen_name == "logo":
             self.screen = LogoScreen(name="logo", app=self)
         elif screen_name == "menu":
-            self.screen = MenuScreen(name="menu", app=self)
+            self.screen = ScreenMenu(name="menu", app=self)
         elif screen_name == "one":
             self.screen = ScreenOne(name="one", app=self)
         elif screen_name == "two":
@@ -94,7 +100,6 @@ class GameApp(App):
         self.sm.clear_widgets()
         self.sm.add_widget(self.screen)
         self.sm.current = self.screen.name
-   
 
 if __name__ == "__main__":
     DEVID = "MAIN"

@@ -6,8 +6,14 @@
             size: self.size
             pos: self.pos
 
-
-<MenuScreen>:
+<ScreenMenu>:
+    canvas:
+        Color:
+            rgb: root.r/255., root.g/255., root.b/255.
+        Rectangle:
+            size: self.size
+            pos: self.pos    
+<MenuScreen1>:
     canvas:
         Color:
             rgb: 245/255., 223/255., 240/255., 1 
@@ -49,7 +55,7 @@
         text: root.label_text 
 
 
-<ScreenOne>:
+<ScreenOne1>:
     Image:
         source: "static/screen1_back.png"
         allow_stretch: True
@@ -180,7 +186,7 @@
 <ScreenTwo>:
     canvas:
         Color:
-            rgb: 245/255., 223/255., 240/255. 
+            rgb: root.r/255., root.g/255., root.b/255. 
         Rectangle:
             pos: self.pos
             size: self.size
@@ -205,7 +211,7 @@
 
      
 <GlowCircleObject>:
-    canvas.after:
+    canvas:
         Color:
             rgba: 1, 1, 1, 0.25
         Ellipse:
@@ -298,6 +304,16 @@
         Rectangle:
             size: self.size
             pos: self.pos
+
+
+<ScreenOne>:
+    canvas:
+        Color:
+            rgb: root.r/255., root.g/255., root.b/255.
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
 
 
 <ScreenTemp>:

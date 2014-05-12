@@ -223,7 +223,7 @@ class ScreenNine(Screen):
     def __init__(self, app, *args, **kwargs):
         super(ScreenNine, self).__init__(*args, **kwargs)
         self.app = app
-        self.win_popup = WinPopup(app, "You won the game", "score", "ten")
+        self.win_popup = WinPopup(app, "You have played all the stages", "Taking you to menu screen", "menu")
         self.lose_popup = LosePopup(app, "Sorry you lost the game", "Try again", "nine")
         self.box_size = [Window.size[0] / 16., Window.size[1] / 10.]
         self.init_physics()
@@ -242,10 +242,10 @@ class ScreenNine(Screen):
         #Adding back and forward buttons
         back_button = Button(text="<", pos=[Window.size[0]*0.025, Window.size[1]*0.925], size_hint = [0.05, 0.05])
         back_button.bind(on_press=self.back_btn_pressed)
-        forward_button = Button(text=">", pos=[Window.size[0]*0.925, Window.size[1]*0.925], size_hint = [0.05, 0.05])
-        forward_button.bind(on_press=self.forward_btn_pressed)
+        #forward_button = Button(text=">", pos=[Window.size[0]*0.925, Window.size[1]*0.925], size_hint = [0.05, 0.05])
+        #forward_button.bind(on_press=self.forward_btn_pressed)
         self.add_widget(back_button)
-        self.add_widget(forward_button)
+        #self.add_widget(forward_button)
 
     def back_btn_pressed(self, *args):
         self.app.switch_screen("eight")
