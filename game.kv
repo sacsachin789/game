@@ -208,6 +208,15 @@
         pos: 0.925 * self.parent.width, 0.925 * self.parent.height
         size_hint: .05, .05 
         on_press: app.switch_screen("three")
+    Label:
+        pos: 0, 0
+        size_hint: 1, 0.1
+        text: "Game Score: %d" % int(app.score)
+        halign: "center"
+        font_size: self.parent.height/15.
+        text_size: [self.parent.width, None]
+        font_name: "static/cartoon.ttf"
+
 
      
 <GlowCircleObject>:
@@ -305,7 +314,6 @@
             size: self.size
             pos: self.pos
 
-
 <ScreenOne>:
     canvas:
         Color:
@@ -313,7 +321,6 @@
         Rectangle:
             size: self.size
             pos: self.pos
-
 
 
 <ScreenTemp>:

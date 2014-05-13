@@ -144,7 +144,6 @@ class ScreenFive(Screen):
     real_drag_circle_objects = ListProperty()
     win_popup = ObjectProperty()
     lose_popup = ObjectProperty()
-    counter = NumericProperty(0)
 
 
 
@@ -222,15 +221,6 @@ class ScreenFive(Screen):
             self.walls.append([15,i])
         self.win_objects.append([14, 8])
         self.drag_circle_objects.append([8, 3])
-        self.drag_circle_objects.append([4, 2])
-        """
-        for i in xrange(2, 16, 2):
-            for j in xrange(1, 8):
-                if i%4:
-                    self.danger_objects.append((i, j))
-                else:
-                    self.danger_objects.append((i, j+1))
-        """
         self.add_ball()
         self.add_walls()
         self.add_win_objects()
@@ -240,10 +230,8 @@ class ScreenFive(Screen):
         self.space.add_collision_handler(1, 4, begin = self.collision_with_danger)
 
     def collision_of_drag_with_end(self, space, arbiter, *args, **kwargs):
-        self.counter += 1
-        if self.counter >= 2:
-            self.win_popup.open()
-            self.on_pre_leave()
+        self.win_popup.open()
+        self.on_pre_leave()
         return False
 
     def collision_with_danger(self, space, arbiter, *args, **kwargs):

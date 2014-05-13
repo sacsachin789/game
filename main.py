@@ -2,7 +2,6 @@ __author__ = "Sachin Railhan"
 __version__ = "1.0"
 
 #STD Library Imports
-import json
 from functools import partial
 import os
 os.environ["KIVY_AUDIO"] = "pygame"
@@ -12,7 +11,7 @@ os.environ["KIVY_AUDIO"] = "pygame"
 #Kivy Imports
 from kivy.config import Config
 
-#Config.set("graphics", "fullscreen", "auto")
+Config.set("graphics", "fullscreen", "auto")
 from kivy.app import App
 from kivy.properties import ObjectProperty, BooleanProperty, StringProperty, NumericProperty
 from kivy.uix.screenmanager import ScreenManager, Screen, FallOutTransition
@@ -47,7 +46,7 @@ class LogoScreen(Screen):
     def on_enter(self):
         anim = Animation(y = 0, t = "out_bounce")
         anim.start(self.img)
-        Clock.schedule_once(partial(self.app.switch_screen, "menu"), 0.5)
+        Clock.schedule_once(partial(self.app.switch_screen, "menu"), 3)
 
 
 
@@ -55,12 +54,9 @@ class LogoScreen(Screen):
 class GameApp(App):
     sm = ObjectProperty()
     screen = ObjectProperty()
-    user_online = BooleanProperty()
-    user_name = StringProperty()
-    user_uid = StringProperty()
     score = NumericProperty(0)
-    opponent_score = NumericProperty(0)
     is_touch = BooleanProperty()
+    music = ObjectProperty()
 
     def build(self):
         self.sm = ScreenManager(transition = FallOutTransition(duration = 0.3))
@@ -101,7 +97,4 @@ class GameApp(App):
         self.sm.add_widget(self.screen)
         self.sm.current = self.screen.name
 
-if __name__ == "__main__":
-    DEVID = "MAIN"
-    game = GameApp()
-    game.run()
+GameApp().run()

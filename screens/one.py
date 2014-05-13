@@ -34,7 +34,7 @@ class Background(Image):
         super(Background, self).__init__()
         self.size_hint = [None, None]
         self.size = [X, Y]
-        self.source = "static/bg_{0}.png".format(random.choice([0, 1, 2, 3, 4, 5]))
+        self.source = "static/landscape.png"
         self.pos = [0, 0]
         self.allow_stretch = True
         self.keep_ratio = False
@@ -46,13 +46,16 @@ class No(Image):
     question = NumericProperty()
     answer = BooleanProperty()
 
-    def __init__(self, index, answer, cloud, screen):
+    def __init__(self, index, question, answer, cloud, screen):
         super(No, self).__init__()
         self.cloud = cloud
         self.index = index
         self.size_hint = [None, None]
         self.size = [NO_WIDTH, NO_HEIGHT]
-        self.source = "static/{0}.png".format(index)
+        if question == 2 or question == 6:
+            self.source = "static/questions/question2/{1}.zip".format(question, index-1)
+        else:
+            self.source = "static/questions/question{0}/{1}.png".format(question, index-1)
         self.pos = [cloud.pos[0] + CLOUD_WIDTH/3., cloud.pos[1]]
         self.screen = screen
         self.answer = answer
@@ -138,8 +141,16 @@ class ScreenOne(Screen):
 
     def create_objects(self, *args):
         self.clear_widgets()
-        #self.add_widget(Background())
+        self.add_widget(Background())
         self.create_rain()
+        self.score_label = Label( pos = [0,  0],
+                size_hint = [1, 0.1],
+                font_name = "static/cartoon.ttf",
+                font_size = Y/15.,
+                text_size = [X, None],
+                halign = "center",
+                text = "Score: 0"
+                )
         self.label = Label( pos = [0,  Y * 0.4],
                 font_name = "static/cartoon.ttf",
                 font_size = Y/15.,
@@ -163,6 +174,7 @@ class ScreenOne(Screen):
         self.add_widget(self.back_btn)
         self.add_widget(self.forward_btn)
         self.add_widget(self.label)
+        self.add_widget(self.score_label)
         for i in xrange(3):
             cloud = Cloud(i+1)
             self.clouds.append(cloud)
@@ -178,15 +190,15 @@ class ScreenOne(Screen):
 
     def update(self, *args):
         if self.index >= 8:
-            return False
+            self.app.switch_screen("two")
+            return True
         for i in self.options:
             self.remove_widget(i)
         self.options = []
         self.label.text = self.questions[self.index]
         self.label.texture_update()
-        print self.label.text
         for i in xrange(3):
-            item = No(i+1, i+1 == self.answers[self.index], self.clouds[i], self) 
+            item = No(i+1, self.index, i+1 == self.answers[self.index], self.clouds[i], self) 
             self.add_widget(item)
             self.options.append(item)
         self.index += 1
@@ -215,10 +227,25 @@ class ScreenOne(Screen):
                 if not item.answer:
                     self.thunderstorm(1)
                     self.thunder.play()
+                    Clock.unschedule(self.update)
+                    self.update()
+                    Clock.schedule_interval(self.update, 4)
+                    self.app.score -= 5
+                    self.score_label.text = "Score: {0}".format(self.app.score)
+                else:
+                    Clock.unschedule(self.update)
+                    self.update()
+                    Clock.schedule_interval(self.update, 4)
+                    self.app.score += 5
+                    self.score_label.text = "Score: {0}".format(self.app.score)
+
+
 
     def on_pre_leave(self, *args):
         Clock.unschedule(self.update)
         self.rain_music.unload()
 
     def on_enter(self, *args):
+        if self.app.music:
+            self.app.music.unload()
         self.rain_music.play()

@@ -25,6 +25,7 @@ import cymunk as cy
 
 #Custom import
 from popups import WinPopup
+from score_label import ScoreLabel
 
 FRAMES = 30.0
 
@@ -97,6 +98,7 @@ class ScreenThree(Screen):
     down = BooleanProperty(0)
     win_objects = ListProperty()
     win_popup = ObjectProperty()
+    score_label = ObjectProperty()
 
 
 
@@ -107,9 +109,10 @@ class ScreenThree(Screen):
         self.win_popup.bind(on_dismiss=self.on_pre_leave)
         self.box_size = [Window.size[0] / 16., Window.size[1] / 10.]
         self.init_physics()
-        self.keyboard = Window.request_keyboard(self.keyboard_closed, self, 'text')
-        self.keyboard.bind(on_key_down=self.on_keyboard_down)
-        self.keyboard.bind(on_key_up=self.on_keyboard_up)
+        if not self.app.is_touch:
+            self.keyboard = Window.request_keyboard(self.keyboard_closed, self, 'text')
+            self.keyboard.bind(on_key_down=self.on_keyboard_down)
+            self.keyboard.bind(on_key_up=self.on_keyboard_up)
         Clock.schedule_interval(self.step, 1/FRAMES)
         #Adding the lines
         for i in xrange(16):
@@ -158,7 +161,8 @@ class ScreenThree(Screen):
 
 
     def keyboard_closed(self):
-        self.keyboard.unbind(on_key_down=self.on_keyboard_down)
+        if not self.app.is_touch:
+            self.keyboard.unbind(on_key_down=self.on_keyboard_down)
 
     def init_physics(self):
         self.space = cy.Space()
@@ -175,6 +179,8 @@ class ScreenThree(Screen):
         self.add_ball()
         self.add_walls()
         self.add_win_objects()
+        self.score_label = ScoreLabel(self.app)
+        self.add_widget(self.score_label)
         self.space.add_collision_handler(1, 3, begin = self.collision_between_balls)
 
     def collision_between_balls(self, space, arbiter, *args, **kwargs):

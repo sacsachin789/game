@@ -17,6 +17,7 @@ from kivy.graphics import Color, Rectangle, Ellipse
 from kivy.clock import Clock
 from kivy.core.image import Image
 from kivy.core.window import Window
+from kivy.core.audio import SoundLoader as SL
 
 #Custom
 from popups import WinPopup, LosePopup
@@ -67,8 +68,9 @@ class ScreenTwo(Screen):
         self.app = app
         self.init_physics() 
         self.animate()
-        self.win_popup = WinPopup(app, "You won the game", "Take green to green", "three")
-        self.win_popup.bind(on_dismiss=self.on_pre_leave)
+        if not self.app.is_touch:
+            self.win_popup = WinPopup(app, "You won the game", "Take green to green", "three")
+            self.win_popup.bind(on_dismiss=self.on_pre_leave)
         self.lose_popup = LosePopup(app, "Sorry you lost the game", "Try again", "two")
         self.lose_popup.bind(on_dismiss=self.on_pre_leave)
         Clock.schedule_interval(self.animate, 1/40.)
@@ -78,7 +80,18 @@ class ScreenTwo(Screen):
     def step(self, *args):
         self.space.step(1/FRAMES)
         self.update_objects()
-        self.ids.label.text = "Score: " + str(int(self.score))
+        self.ids.label.text = "This stage Score: " + str(int(self.score))
+
+    def on_enter(self, *args):
+        if not self.app.music:
+            self.app.music = SL.load("static/music.wav")
+            self.app.music.loop = True
+            self.app.music.play()
+        else:
+            if self.app.music.state == "stop":
+                self.app.music = SL.load("static/music.wav")
+                self.app.music.loop = True
+                self.app.music.play()
 
     def on_pre_leave(self, *args):
         Clock.unschedule(self.step)
@@ -87,7 +100,7 @@ class ScreenTwo(Screen):
         if self.ids.back_button.collide_point(*touch.pos):
             self.app.switch_screen("one")
             return
-        if self.ids.forward_button.collide_point(*touch.pos):
+        if self.ids.forward_button.collide_point(*touch.pos) and not self.app.is_touch:
             self.app.switch_screen("three")
             return
         for item in self.all_widgets:
@@ -137,6 +150,8 @@ class ScreenTwo(Screen):
         self.score = ((3.14 * score) / (Window.size[0] * Window.size[1])) * 100 * (1000/50.)
         self.score /= 10.
         if self.score >= 100:
+            self.app.score += 40
+            self.on_pre_leave()
             self.win_popup.open()
 
     def init_physics(self, *args):
