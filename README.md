@@ -1,3 +1,3 @@
 game
 ====
-This game is made by me and Nitin for kivy contest.Hope people like it.
+This game is made by me and <a href="https://github.com/nitinsaroha">Nitin</a> for kivy contest.Hope people like it.
