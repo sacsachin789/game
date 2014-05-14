@@ -8,8 +8,12 @@ Requirements:
 
 
 1. <a href="cython.org">cython</a>
+
 <a href="http://docs.cython.org/src/quickstart/install.html">Check installation guide</a>
-    Download latest release from <a href="cython.org">.Unpack the tarball or zip file, enter the directory, and then run:
+
+    Download latest release from <a href="cython.org">cython.org</a>
+
+    Unpack the tarball or zip file, enter the directory, and then run:
     
     python setup.py install
 
