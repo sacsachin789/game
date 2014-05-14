@@ -131,9 +131,11 @@ class ScreenThree(Screen):
         self.add_widget(forward_button)
 
     def back_btn_pressed(self, *args):
+        self.on_pre_leave()
         self.app.switch_screen("two")
 
     def forward_btn_pressed(self, *args):
+        self.on_pre_leave()
         self.app.switch_screen("four")
 
 

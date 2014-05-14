@@ -20,6 +20,7 @@ from kivy.properties import ObjectProperty, NumericProperty, ListProperty, Boole
 from kivy.core.window import Window
 from kivy.uix.image import Image
 from kivy.clock import Clock
+from kivy.animation import Animation
 
 #Custom
 
@@ -32,20 +33,28 @@ class Play(Image):
         super(Play, self).__init__(*args, **kwargs)
         self.size_hint = [None, None] 
         self.size = [X/3., Y/3.]
-        self.pos = [X*0.1, Y*0.1]
+        self.pos = [X*(-0.35), Y*0.1]
         self.allow_stretch = True
         self.keep_ratio = True
         self.source = "static/play_300.png"
+
+    def animate(self):
+        anim = Animation(x=X*0.1, t="in_quint", d=1)
+        anim.start(self)
 
 class Help(Image):
     def __init__(self, *args, **kwargs):
         super(Help, self).__init__(*args, **kwargs)
         self.size_hint = [None, None] 
         self.size = [X/3., Y/3.]
-        self.pos = [X*0.55, Y*0.55]
+        self.pos = [X*1.1, Y*0.55]
         self.allow_stretch = True
         self.keep_ratio = True
         self.source = "static/help_300.png"
+
+    def animate(self):
+        anim = Animation(x=X*0.55, t="in_quint", d=1)
+        anim.start(self)
 
 class ScreenMenu(Screen):
     play_wdg = ObjectProperty()
@@ -99,3 +108,7 @@ class ScreenMenu(Screen):
             self.b += 1
         else:
             self.b -= 1
+
+    def on_enter(self, *args):
+        self.play_wdg.animate()
+        self.help_wdg.animate()

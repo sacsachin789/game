@@ -6,6 +6,7 @@
             size: self.size
             pos: self.pos
 
+
 <ScreenMenu>:
     canvas:
         Color:
@@ -13,34 +14,7 @@
         Rectangle:
             size: self.size
             pos: self.pos    
-<MenuScreen1>:
-    canvas:
-        Color:
-            rgb: 245/255., 223/255., 240/255., 1 
-        Rectangle:
-            size: self.size
-            pos: self.pos
-    GridLayout:
-        size_hint: 0.6, 0.8
-        pos: self.parent.size[0] * 0.2, self.parent.size[1] * 0.1 
-        rows: 11
-        Label
-        Button:
-            text: "Delete"
-        Label
-        Button:
-            text: "About"
-        Label
-        Button:
-            text: "Help"
-        Label
-        Button:
-            text: "Play Game"
-            on_press: app.switch_screen("one")
-        Label
-        Button:
-            text: "Leaderboard"
-        Label
+
 
 <WinPopup>:
     size_hint: .5, .5
@@ -48,140 +22,13 @@
     Label:
         text: root.label_text 
 
+
 <LosePopup>:
     size_hint: .5, .5
     title: root.title 
     Label:
         text: root.label_text 
 
-
-<ScreenOne1>:
-    Image:
-        source: "static/screen1_back.png"
-        allow_stretch: True
-        keep_ratio: False
-    Label:
-        size_hint: 0.5, 0.05
-        pos: self.parent.size[0] * 0.25, self.parent.size[1] * 0.8
-        id: label
-        color: 242/255., 19/255., 190/255., 1
-        font_size: self.height
-    GridLayout:
-        size_hint: 1, 0.1
-        pos: 0, self.parent.size[1] * 0.9
-        rows: 1
-        cols: 5
-        Button:
-            text: "<"
-            on_press: root.app.switch_screen("menu")
-        Label:
-            text: "Score: " + str(root.score)
-            color: 242/255., 19/255., 190/255., 1
-            font_size: self.parent.size[1] * 0.5
-        Label:
-            id: time_label
-            color: 242/255., 19/255., 190/255., 1
-            font_size: self.parent.size[1] * 0.5
-        Button:
-            text: "Start"
-            on_press: root.start_game()
-        Button:
-            text: ">"
-            on_press: root.app.switch_screen("two")
-             
-    GridLayout:
-        size_hint: 1, 0.1
-        pos: 0, self.parent.size[1] * 0.2
-        rows: 1
-        cols: 10
-        Button:
-            text: "q"
-            on_press: root.button_pressed("q")
-        Button:
-            text: "w"
-            on_press: root.button_pressed("w")
-        Button:
-            text: "e"
-            on_press: root.button_pressed("e")
-        Button:
-            text: "r"
-            on_press: root.button_pressed("r")
-        Button:
-            text: "t"
-            on_press: root.button_pressed("t")
-        Button:
-            text: "y"
-            on_press: root.button_pressed("y")
-        Button:
-            text: "u"
-            on_press: root.button_pressed("u")
-        Button:
-            text: "i"
-            on_press: root.button_pressed("i")
-        Button:
-            text: "o"
-            on_press: root.button_pressed("o")
-        Button:
-            text: "p"
-            on_press: root.button_pressed("p")
-    GridLayout:
-        size_hint: 1, 0.1
-        pos: 0, self.parent.size[1] * 0.1
-        rows: 1
-        cols: 9
-        Button:
-            text: "a"
-            on_press: root.button_pressed("a")
-        Button:
-            text: "s"
-            on_press: root.button_pressed("s")
-        Button:
-            text: "d"
-            on_press: root.button_pressed("d")
-        Button:
-            text: "f"
-            on_press: root.button_pressed("f")
-        Button:
-            text: "g"
-            on_press: root.button_pressed("g")
-        Button:
-            text: "h"
-            on_press: root.button_pressed("h")
-        Button:
-            text: "j"
-            on_press: root.button_pressed("j")
-        Button:
-            text: "k"
-            on_press: root.button_pressed("k")
-        Button:
-            text: "l"
-            on_press: root.button_pressed("l")
-    GridLayout:
-        size_hint: 1, 0.1
-        pos: 0, 0
-        rows: 1
-        cols: 7
-        Button:
-            text: "z"
-            on_press: root.button_pressed("z")
-        Button:
-            text: "x"
-            on_press: root.button_pressed("x")
-        Button:
-            text: "c"
-            on_press: root.button_pressed("c")
-        Button:
-            text: "v"
-            on_press: root.button_pressed("v")
-        Button:
-            text: "b"
-            on_press: root.button_pressed("b")
-        Button:
-            text: "n"
-            on_press: root.button_pressed("n")
-        Button:
-            text: "m"
-            on_press: root.button_pressed("m")
 
 <ScreenTwo>:
     canvas:
@@ -217,7 +64,6 @@
         text_size: [self.parent.width, None]
         font_name: "static/cartoon.ttf"
 
-
      
 <GlowCircleObject>:
     canvas:
@@ -231,6 +77,7 @@
         Ellipse:
             size: self.size
             pos: self.pos
+
     
 <CircleObject>:
     canvas.after:
@@ -239,6 +86,7 @@
         Ellipse:
             size: self.size
             pos: self.pos
+
      
 <DragCircleObject>:
     canvas.after:
@@ -247,6 +95,7 @@
         Ellipse:
             size: self.size
             pos: self.pos
+
       
 <DangerCircleObject>:
     canvas.after:
@@ -256,6 +105,7 @@
             size: self.size
             pos: self.pos
 
+
 <DoorObject>:
     canvas:
         Color:
@@ -263,6 +113,7 @@
         Rectangle:
             size: self.size
             pos: self.pos
+
  
 <WallObject>:
     canvas:
@@ -271,6 +122,7 @@
         Rectangle:
             size: self.size
             pos: self.pos
+
   
 <DarkObject>:
     canvas:
@@ -289,6 +141,7 @@
             size: self.size
             pos: self.pos
 
+
 <WinObject>:
     canvas:
         Color:
@@ -296,6 +149,7 @@
         Rectangle:
             size: self.size
             pos: self.pos
+
 
 <FakeDoorObject,RealDoorObject>:
     canvas:
@@ -314,6 +168,7 @@
             size: self.size
             pos: self.pos
 
+
 <ScreenOne>:
     canvas:
         Color:
@@ -330,3 +185,11 @@
         Rectangle:
             size: self.size
             pos: self.pos
+
+
+<ScreenHelp>:
+    Button:
+        text: "<"
+        pos: 0.025 * self.parent.width, 0.925 * self.parent.height
+        size_hint: .05, .05 
+        on_press: app.switch_screen("menu")

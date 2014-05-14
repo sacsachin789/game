@@ -137,7 +137,6 @@ class ScreenOne(Screen):
         assert len(self.questions) == len(self.answers)
         self.create_objects()
         self.update()
-        Clock.schedule_interval(self.update, 4)
 
     def create_objects(self, *args):
         self.clear_widgets()
@@ -186,10 +185,12 @@ class ScreenOne(Screen):
             self.add_widget(drop)
 
     def go_to(self, screen):
+        self.on_pre_leave()
         self.app.switch_screen(screen)
 
     def update(self, *args):
         if self.index >= 8:
+            self.on_pre_leave()
             self.app.switch_screen("two")
             return True
         for i in self.options:
@@ -202,6 +203,7 @@ class ScreenOne(Screen):
             self.add_widget(item)
             self.options.append(item)
         self.index += 1
+        Clock.schedule_once(self.update, 4)
 
     def thunderstorm(self, start, *args):
         if start:
@@ -229,13 +231,11 @@ class ScreenOne(Screen):
                     self.thunder.play()
                     Clock.unschedule(self.update)
                     self.update()
-                    Clock.schedule_interval(self.update, 4)
                     self.app.score -= 5
                     self.score_label.text = "Score: {0}".format(self.app.score)
                 else:
                     Clock.unschedule(self.update)
                     self.update()
-                    Clock.schedule_interval(self.update, 4)
                     self.app.score += 5
                     self.score_label.text = "Score: {0}".format(self.app.score)
 
