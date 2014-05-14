@@ -152,7 +152,11 @@ class ScreenTwo(Screen):
         if self.score >= 100:
             self.app.score += 40
             self.on_pre_leave()
-            self.win_popup.open()
+            if not self.app.is_touch:
+                self.win_popup.open()
+            else:
+                self.win_popup = WinPopup(self.app, "You won the game", "Taking you to Menu", "menu")
+                self.win_popup.open()
 
     def init_physics(self, *args):
         self.space = cy.Space()
