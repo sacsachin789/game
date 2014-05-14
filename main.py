@@ -11,7 +11,7 @@ os.environ["KIVY_AUDIO"] = "pygame"
 #Kivy Imports
 from kivy.config import Config
 
-#Config.set("graphics", "fullscreen", "auto")
+Config.set("graphics", "fullscreen", "auto")
 from kivy.app import App
 from kivy.properties import ObjectProperty, BooleanProperty, StringProperty, NumericProperty
 from kivy.uix.screenmanager import ScreenManager, Screen, FallOutTransition
