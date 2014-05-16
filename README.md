@@ -1,32 +1,60 @@
-game
+![alt Icon](https://github.com/sacsachin789/game/blob/master/static/cloud_1.png)
+
+Kivame
 ====
-This game is made by me and <a href="https://github.com/nitinsaroha">Nitin</a> for kivy contest.Hope people like it.
+Kivame is fun (quiz + game) app made for Kivy contest 2014.
 
-Requirements:
-    cython
-    cymunk
+# Requirements:
+1. [cython](http://cython.org)
 
-First make sure you have kivy installed.
-Then install cython and cymunk.
-
-1. <a href="http://cython.org">Cython</a>
-Download latest release from <a href="http://cython.org">cython.org</a>
+Download latest release from [cython.org](http://cython.org)
 Unpack the tarball or zip file, enter the directory, and then run:
     
-    python setup.py install
+```python setup.py install```
 
 Or if you have Python setuptools, install it using:
         
-    easy_install cython
+```easy_install cython```
 
-For more information, <a href="http://docs.cython.org/src/quickstart/install.html">Check installation guide</a>
+For more information, [check installation guide](http://docs.cython.org/src/quickstart/install.html)
 
-2. <a href="https://cymunk.readthedocs.org/en/latest/">cymunk</a>
-<a href="https://github.com/tito/cymunk.git">Clone the github repository</a> or <a href="https://github.com/tito/cymunk/archive/master.zip">download</a> the zip.
+2. [Cymunk](https://cymunk.readthedocs.org/en/latest/)
+
+Cymunk is a port of [Chipmunk](http://chipmunk-physics.net/), based on Cython.
+[Clone the github repository](https://github.com/tito/cymunk.git) or [download](https://github.com/tito/cymunk/archive/master.zip) the zip.
 Unpack the zip, enter the directory and run:
 
-    python setup.py build_ext --inplace
+```python setup.py build_ext --inplace```
 
 After installing cython and cymunk, enter the directory and run:
+```kivy main.py```
 
-    kivy main.py
+App contains 9 stages:
+
+1. 1st is quiz stage.General questions are asked in a funny way.Warning: lightning!!!! :)
+![alt Stage 1](https://dl.dropboxusercontent.com/u/28491877/1.png)
+
+2. 2nd requires cymunk.This stage checks your decision making skills.Touch the circles to increase their size but remember they should not touch others during inflation.Note hint for next stage is only given when one successfully passes the current stage.
+![alt Stage 2](https://dl.dropboxusercontent.com/u/28491877/2.png)
+
+## The following stages are not included in android app due to some technical reasons.
+3. Use direction keys or wasd to play the simple stage.
+![alt Stage 3](https://dl.dropboxusercontent.com/u/28491877/3.png)
+
+Similarly there are other stages where player's decision making skills are tested.And hints provide mathematical questions ,matrices, advices, etc.
+4. Hint: Green = good, red = bad
+5. Hint: Mix blue and green
+6. Hint: Run forrest run
+7. Hint: 143%22
+8. Hint: Think twice before taking any step
+9. Hint: X O X X X X X X X X X X X X
+         X X X X X X X X X X X X X X
+         X X X X X X X X X X X X X X
+         X X X X X X X X X X X X X X
+         X X X X X X X X X X X X X X
+         X X X X X X X X X X X X X X
+         X X X X X X X X X X X X X X
+         X X X X X X X X X X X X X X
+
+Made by [Sachin](https://github.com/sacsachin789) and [Nitin](https://github.com/nitinsaroha) for kivy contest.
+Hope people like it.
