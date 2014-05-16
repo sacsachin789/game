@@ -36,7 +36,7 @@ App contains 9 stages:
 2. 2nd requires cymunk.This stage checks your decision making skills.Touch the circles to increase their size but remember they should not touch others during inflation.Note hint for next stage is only given when one successfully passes the current stage.
 ![alt Stage 2](https://dl.dropboxusercontent.com/u/28491877/2.png)
 
-## The following stages are not included in android app due to some technical reasons.
+#### The following stages are not included in android app due to some technical reasons.
 3. Use direction keys or wasd to play the simple stage.
 ![alt Stage 3](https://dl.dropboxusercontent.com/u/28491877/3.png)
 
@@ -57,14 +57,21 @@ Similarly there are other stages where player's decision making skills are teste
 ![alt Stage 8](https://dl.dropboxusercontent.com/u/28491877/8.png)
 
 9. Hint:
-..*X O X X X X X X X X X X X X
-..*X X X X X X X X X X X X X X
-..*X X X X X X X X X X X X X X
-..*X X X X X X X X X X X X X X
-..*X X X X X X X X X X X X X X
-..*X X X X X X X X X X X X X X
-..*X X X X X X X X X X X X X X
-..*X X X X X X X X X X X X X X
+* X O X X X X X X X X X X X X
+ 
+* X X X X X X X X X X X X X X
+
+* X X X X X X X X X X X X X X
+ 
+* X X X X X X X X X X X X X X
+
+* X X X X X X X X X X X X X X
+
+* X X X X X X X X X X X X X X
+
+* X X X X X X X X X X X X X X
+
+* X X X X X X X X X X X X X X
 
 ![alt Stage 9](https://dl.dropboxusercontent.com/u/28491877/9.png)
 
