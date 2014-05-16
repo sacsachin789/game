@@ -25,8 +25,8 @@ X = Window.size[0]
 Y = Window.size[1]
 CLOUD_WIDTH = X/5.
 CLOUD_HEIGHT = Y/5.
-NO_WIDTH = X/15.
-NO_HEIGHT = Y/15.
+NO_WIDTH = X/10.
+NO_HEIGHT = Y/10.
 
 
 class Background(Image):
@@ -203,7 +203,7 @@ class ScreenOne(Screen):
             self.add_widget(item)
             self.options.append(item)
         self.index += 1
-        Clock.schedule_once(self.update, 4)
+        Clock.schedule_once(self.update, 6.5)
 
     def thunderstorm(self, start, *args):
         if start:
