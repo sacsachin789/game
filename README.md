@@ -43,18 +43,36 @@ App contains 9 stages:
 
 Similarly there are other stages where player's decision making skills are tested.And hints provide mathematical questions ,matrices, advices, etc.
 4. Hint: Green = good, red = bad
+![alt Stage 4](https://dl.dropboxusercontent.com/u/28491877/4.png)
+
 5. Hint: Mix blue and green
+![alt Stage 5](https://dl.dropboxusercontent.com/u/28491877/5.png)
+
 6. Hint: Run forrest run
+![alt Stage 6](https://dl.dropboxusercontent.com/u/28491877/6.png)
+
 7. Hint: 143%22
+![alt Stage 7](https://dl.dropboxusercontent.com/u/28491877/7.png)
+
 8. Hint: Think twice before taking any step
+![alt Stage 8](https://dl.dropboxusercontent.com/u/28491877/8.png)
+
 9. Hint: X O X X X X X X X X X X X X
+
          X X X X X X X X X X X X X X
+         
          X X X X X X X X X X X X X X
+         
          X X X X X X X X X X X X X X
+         
          X X X X X X X X X X X X X X
+         
          X X X X X X X X X X X X X X
+         
          X X X X X X X X X X X X X X
+         
          X X X X X X X X X X X X X X
+![alt Stage 9](https://dl.dropboxusercontent.com/u/28491877/9.png)
 
 Made by [Sachin](https://github.com/sacsachin789) and [Nitin](https://github.com/nitinsaroha) for kivy contest.
 Hope people like it.
