@@ -33,7 +33,7 @@ App contains 9 stages:
 1. 1st is quiz stage.General questions are asked in a funny way.Warning: lightning!!!! :)
 ![alt Stage 1](https://dl.dropboxusercontent.com/u/28491877/1.png)
 
-2. 2nd requires cymunk.This stage checks your decision making skills.Touch the circles to increase their size but remember they should not touch others during inflation.Note hint for next stage is only given when one successfully passes the current stage.
+2. 2nd requires cymunk.This stage checks your decision making skills.Touch the circles to increase their size but remember they should not touch others during inflation.Note hint for next stage is only given when you successfully passes the current stage.
 ![alt Stage 2](https://dl.dropboxusercontent.com/u/28491877/2.png)
 
 #### The following stages are not included in android app due to some technical reasons.
