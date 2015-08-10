@@ -74,6 +74,3 @@ Similarly there are other stages where player's decision making skills are teste
 * X X X X X X X X X X X X X X
 
 ![alt Stage 9](https://dl.dropboxusercontent.com/u/28491877/9.png)
-
-Made by [Sachin](https://github.com/sacsachin789) and [Nitin](https://github.com/nitinsaroha) for kivy contest.
-Hope people like it.
